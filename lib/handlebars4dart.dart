@@ -1,6 +1,7 @@
 library handlebars4dart;
 
 import 'dart:io';
+import 'dart:convert';
 
 part 'src/token.dart';
 part 'src/context.dart';

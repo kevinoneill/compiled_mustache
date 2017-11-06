@@ -11,9 +11,11 @@ void main() {
   for (FileSystemEntity file in specs) {
     if (file is File && path.extension(file.path) == ".yml") {
       String name = path.basenameWithoutExtension(file.path);
-      YamlNode spec = loadYaml((file as File).readAsStringSync());
-      runSpec(name, spec);
-      break;
+      
+      if (name == 'comments' || name == 'interpolation') {
+        YamlNode spec = loadYaml((file as File).readAsStringSync());
+        runSpec(name, spec);
+      }
     }
   }
   
@@ -32,6 +34,7 @@ void runSpec(String name, YamlNode spec) {
     for (YamlNode test in tests) {
       runTest(test);
     }
+    // runTest(tests[3]);
   });
 }
 

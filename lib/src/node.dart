@@ -7,6 +7,8 @@ class _Node {
   String _name;
   List<_Node> _contents;
   
+  HtmlEscape _escaper = new HtmlEscape();
+  
   _Node(String from, _NodeType this.type, [List<_Node> this._contents]) {
     switch (type) {
       case _NodeType.text:
@@ -21,9 +23,12 @@ class _Node {
   String render(_Context cntxt) {
     switch (type) {
       case _NodeType.text: return _text;
-      case _NodeType.interpolation: return cntxt.get(_name);
+      case _NodeType.interpolation: return _escaper.convert(cntxt.get(_name));
+      case _NodeType.raw:
+        print(_name);
+        return cntxt.get(_name);
       case _NodeType.comment: return '';  //TODO: ignore comments during compile step
-      default: return "$type";
+      default: return "\$";
     }
   }
 }
@@ -31,6 +36,7 @@ class _Node {
 enum _NodeType {
   text,
   interpolation,
+  raw,
   comment,
   delimiter,
   section,

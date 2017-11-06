@@ -38,6 +38,9 @@ class _Parser {
       String name = _tmplt.substring(_openIndex + _delim.start.length, _closeIndex).trim();
       _NodeType type = _NodeType.interpolation;
       switch (name[0]) {
+        case '&':
+          type = _NodeType.raw;
+          break;
         case '!':
           type = _NodeType.comment;
           break;
@@ -58,9 +61,17 @@ class _Parser {
         // Comment was on it's own line, indicies have already been updated
         continue;
       }
+      
       if (_openIndex > 0) {
         // Capture the stuff before the tag
         _nodes.add(new _Node(_tmplt.substring(_nextStartIndex, _openIndex), _NodeType.text));
+      }
+      
+      if (type == _NodeType.interpolation) {
+        processInterpolation();
+      } else {
+        // If the type isn't a straight interpolation, it has an extra char at the beginning
+        name = name.substring(1).trim();
       }
       
       if (!_skipNode) {
@@ -100,5 +111,15 @@ class _Parser {
     
     _skipNode = true;
     return false;
+  }
+  
+  void processInterpolation() {
+    if (_tmplt[_openIndex + _delim.start.length] == '{' && _tmplt[_closeIndex + _delim.end.length] == '}') {
+      _closeIndex += 1;
+      _skipNode = true;
+      
+      String name = _tmplt.substring(_openIndex + _delim.start.length + 1, _closeIndex - 1).trim();
+      _nodes.add(new _Node(name, _NodeType.raw));
+    }
   }
 }

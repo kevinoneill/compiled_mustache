@@ -10,6 +10,6 @@ class _Context {
   
   Object get(String name) {
     Object o = _map[name] ?? _parent?.get(name);
-    return o.toString() ?? '';
+    return (o ?? '').toString();
   }
 }
