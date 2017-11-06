@@ -1,0 +1,7 @@
+name: handlebars4dart
+description: Native handlebars implementation for Dart
+author: thislooksfun <thislooksfun@repbot.com>
+homepage: https://github.com/thislooksfun/handlebars4dart
+version: 1.0.0
+dev_dependencies:
+  test: "^0.12.27"
