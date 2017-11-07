@@ -5,27 +5,64 @@ import 'package:yaml/yaml.dart';
 import 'package:path/path.dart' as path;
 
 void main() {
-  print(Directory.current.path + '/test/specs/comments.yml');
-  
   var specs = new Directory('test/specs').listSync();
   for (FileSystemEntity file in specs) {
     if (file is File && path.extension(file.path) == ".yml") {
       String name = path.basenameWithoutExtension(file.path);
       
-      if (name == 'comments' || name == 'interpolation') {
+      if (name == 'sections' || name == 'comments' || name == 'interpolation' || name == 'inverted') {
+      // if (name == '~lambdas') {
+      // if (name == 'comments') {
+      // if (name == 'delimiters') {
+      // if (name == 'interpolation') {
+      // if (name == 'inverted') {
+      // if (name == 'partials') {
+      // if (name == 'sections') {
         YamlNode spec = loadYaml((file as File).readAsStringSync());
         runSpec(name, spec);
       }
     }
   }
   
-  var comments = loadYaml(new File('test/specs/comments.yml').readAsStringSync());
+  // String tmplt = """{{#a}}
+  // {{one}}
+  // {{#b}}
+  // {{one}}{{two}}{{one}}
+  // {{#c}}
+  // {{one}}{{two}}{{three}}{{two}}{{one}}
+  // {{#d}}
+  // {{one}}{{two}}{{three}}{{four}}{{three}}{{two}}{{one}}
+  // {{#e}}
+  // {{one}}{{two}}{{three}}{{four}}{{five}}{{four}}{{three}}{{two}}{{one}}
+  // {{/e}}
+  // {{one}}{{two}}{{three}}{{four}}{{three}}{{two}}{{one}}
+  // {{/d}}
+  // {{one}}{{two}}{{three}}{{two}}{{one}}
+  // {{/c}}
+  // {{one}}{{two}}{{one}}
+  // {{/b}}
+  // {{one}}
+  // {{/a}}""";
   
-  // .then((String contents) {
-  //   console.log(contents);
-  //   var doc = loadYaml(contents);
-  //   print(doc['overview']);
-  // }).catchError((error) => print(error));
+  // String tmplt = """{{#a}}
+  // {{one}}
+  // {{#b}}
+  // {{one}}{{two}}{{one}}
+  // {{/b}}
+  // {{one}}
+  // {{/a}}""";
+  //
+  // Map<String, Object> map = {
+  //   'a': { 'one': 1 },
+  //   'b': { 'two': 2 },
+  //   'c': { 'three': 3 },
+  //   'd': { 'four': 4 },
+  //   'e': { 'five': 5 }
+  // };
+  //
+  // print(tmplt);
+  // print('------------');
+  // print(compile(tmplt).render(map));
 }
 
 void runSpec(String name, YamlNode spec) {
