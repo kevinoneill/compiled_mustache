@@ -1,13 +1,13 @@
 part of handlebars4dart;
 
 class _Node {
-  _NodeType _type;
+  static final HtmlEscape _escaper = new HtmlEscape();
   
-  String _data;
-  List<_Node> _contents;
-  String _indent;
+  final _NodeType _type;
   
-  HtmlEscape _escaper = new HtmlEscape();
+  final String _data;
+  final List<_Node> _contents;
+  final String _indent;
   
   _Node(String this._data, _NodeType this._type, [List<_Node> this._contents, String this._indent]);
   

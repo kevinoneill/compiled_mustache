@@ -1,10 +1,11 @@
 part of handlebars4dart;
 
 class _Parser {
-  RegExp _anyChar = new RegExp(r'\S', multiLine: true);
-  RegExp _newline = new RegExp(r'\n', multiLine: true);
+  static final RegExp _anyChar = new RegExp(r'\S', multiLine: true);
+  static final RegExp _newline = new RegExp(r'\n', multiLine: true);
+  static final RegExp _someWhitespace = new RegExp(r'\s+', multiLine: true);
   
-  String _tmplt;
+  final String _tmplt;
   
   int _nextStartIndex = 0;
   int _openIndex = 0;
@@ -19,11 +20,13 @@ class _Parser {
   List<bool> _inversionStack = [];
   List<List<_Node>> _stack = [];
   
+  
   _Parser(String this._tmplt);
   
   
   List<_Node> parse() {
     _delim = new _Delimiter();
+    _Delimiter newDelim = null;
     while (true) {
       _skipNode = false;
       if (_nextStartIndex >= _tmplt.length) {
@@ -44,6 +47,37 @@ class _Parser {
       if (type == _NodeType.comment) {
         _skipNode = true;
         if (processStandaloneTag()) {
+          // Comment was on it's own line, indicies have already been updated
+          continue;
+        }
+      }
+      
+      if (type == _NodeType.delimiter) {
+        String cntnts = _tmplt.substring(_openIndex + _delim.start.length, _closeIndex);
+        if (cntnts.length < 2) {
+          throw new FormatException('Unknown tag type (at ${_Position.from(_openIndex + _delim.start.length, _tmplt)})');
+        }
+        if (cntnts[0] != '=') {
+          throw new FormatException('Expected \'=\', got ${cntnts[0]} (at ${_Position.from(_openIndex + _delim.start.length, _tmplt)}');
+        }
+        if (cntnts[cntnts.length-1] != '=') {
+          throw new FormatException('Expected \'=\', got ${cntnts[cntnts.length-1]} (at ${_Position.from(_closeIndex-1, _tmplt)})');
+        }
+        String s = cntnts.substring(1, cntnts.length-1).trim().replaceAll(_someWhitespace, ' ');
+        List<String> parts = s.split(' ');
+        if (parts.length < 2) {
+          throw new FormatException('Delimiter tags require an open and a close tag (at ${_Position.from(_openIndex, _tmplt)})');
+        }
+        if (parts.length > 2) {
+          throw new FormatException('Delimiter tags require exactly two parts (at ${_Position.from(_openIndex, _tmplt)})');
+        }
+        
+        newDelim = new _Delimiter(start: parts[0], end: parts[1]);
+        
+        _skipNode = true;
+        if (processStandaloneTag()) {
+          _delim = newDelim;
+          newDelim = null;
           // Comment was on it's own line, indicies have already been updated
           continue;
         }
@@ -77,7 +111,7 @@ class _Parser {
       if (type == _NodeType.sectionEnd) {
         String startName = _nameStack.removeLast();
         if (name != startName) {
-          throw new StateError("ERROR: $name doesn't match $startName");
+          throw new FormatException("ERROR: $name doesn't match $startName (at ${_Position.from(_openIndex, _tmplt)})");
         }
         bool inverted = _inversionStack.removeLast();
         _Node n = new _Node(name, inverted ? _NodeType.inverted : _NodeType.section, _nodes);
@@ -99,11 +133,14 @@ class _Parser {
       }
       
       if (!_skipNode) {
-        // print("adding $type node");
         _nodes.add(new _Node(name, type));
       }
       
       _nextStartIndex = _closeIndex + _delim.end.length;
+      if (newDelim != null) {
+        _delim = newDelim;
+        newDelim = null;
+      }
     }
     
     if (_nextStartIndex < _tmplt.length) {
@@ -195,5 +232,36 @@ class _Parser {
       String name = _tmplt.substring(_openIndex + _delim.start.length + 1, _closeIndex - 1).trim();
       _nodes.add(new _Node(name, _NodeType.raw));
     }
+  }
+}
+
+class _Position {
+  final int line;
+  final int col;
+  
+  static _Position from(int index, String src) {
+    if (index < 0) {
+      throw new ArgumentError.value(index, 'index', 'Argument must be >= 0');
+    }
+    if (index > src.length) {
+      throw new ArgumentError.value(index, 'index', 'Argument must be <= src.length');
+    }
+    
+    int r = 0;
+    int c = 0;
+    for (int i = 0; i < index; i++) {
+      c++;
+      if (src[i] == '\n') {
+        c = 0;
+        r++;
+      }
+    }
+    return new _Position(r, c);
+  }
+  
+  _Position(int this.line, int this.col);
+  
+  String toString() {
+    return "row $line:$col";
   }
 }

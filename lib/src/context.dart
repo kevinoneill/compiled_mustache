@@ -1,9 +1,9 @@
 part of handlebars4dart;
 
 class _Context {
-  _Context _parent = null;
-  Object _obj = null;
-  Map<String, Object> _map;
+  final _Context _parent;
+  final Object _obj;
+  final Map<String, Object> _map;
   
   factory _Context(Object o, [_Context par]) {
     if (o is Map<String, Object>) {

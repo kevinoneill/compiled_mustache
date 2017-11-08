@@ -13,7 +13,7 @@ void main() {
       if (false
       //  || name == '~lambdas'
        || name == 'comments'      // Done
-      //  || name == 'delimiters'
+       || name == 'delimiters'    // Done
        || name == 'interpolation' // Done
        || name == 'inverted'      // Done
        || name == 'partials'      // Done
@@ -29,10 +29,12 @@ void main() {
 void runSpec(String name, YamlNode spec) {
   group(name, () {
     YamlNode tests = spec['tests'];
+    
     for (YamlNode test in tests) {
       runTest(test);
     }
-    // runTest(tests[7]);
+    
+    // runTest(tests[2]);
   });
 }
 
