@@ -19,8 +19,7 @@ class _Parser {
   List<bool> _inversionStack = [];
   List<List<_Node>> _stack = [];
   
-  _Parser(String this._tmplt) {
-  }
+  _Parser(String this._tmplt);
   
   
   List<_Node> parse() {
@@ -88,7 +87,13 @@ class _Parser {
         
         if (processStandaloneTag()) {
           // Section start was on it's own line, indicies have already been updated
-          // print('$_nextStartIndex');
+          continue;
+        }
+      }
+      
+      if (type == _NodeType.partial) {
+        // Partial was on it's own line, indicies have already been updated
+        if (processPartial()) {
           continue;
         }
       }
@@ -117,6 +122,7 @@ class _Parser {
       case _NodeType.section:
       case _NodeType.inverted:
       case _NodeType.sectionEnd:
+      case _NodeType.partial:
         return true;
       default: return false;
     }
@@ -127,6 +133,26 @@ class _Parser {
     bool isAlone = isOnOwnLine();
     if (isAlone) {
       consumeLine();
+    }
+    return isAlone;
+  }
+  
+  bool processPartial() {
+    bool isAlone = isOnOwnLine();
+    if (isAlone) {
+      int lastNewlineIndex = _openIndex > 0 ? _tmplt.lastIndexOf(_newline, _openIndex - 1) : -1;
+      int endOfClose = _closeIndex + _delim.end.length;
+      int nextNewlineIndex = endOfClose < _tmplt.length ? _tmplt.indexOf(_newline, _closeIndex + _delim.end.length) : _tmplt.length;
+      
+      // If the 'next' returns -1, it's reached the end of the string
+      if (nextNewlineIndex == -1) nextNewlineIndex = _tmplt.length;
+      
+      _nodes.add(new _Node(_tmplt.substring(_nextStartIndex, lastNewlineIndex + 1), _NodeType.text));
+      String indent = _tmplt.substring(lastNewlineIndex + 1, _openIndex);
+      String name = _tmplt.substring(_openIndex + _delim.start.length + 1, _closeIndex).trim();
+      _nodes.add(new _Node(name, _NodeType.partial, [], indent));
+      _nextStartIndex = nextNewlineIndex + 1;
+      _skipNode = true;
     }
     return isAlone;
   }

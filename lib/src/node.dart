@@ -1,22 +1,55 @@
 part of handlebars4dart;
 
 class _Node {
-  _NodeType type;
+  _NodeType _type;
   
   String _data;
   List<_Node> _contents;
+  String _indent;
   
   HtmlEscape _escaper = new HtmlEscape();
   
-  _Node(String this._data, _NodeType this.type, [List<_Node> this._contents]) {
-  }
+  _Node(String this._data, _NodeType this._type, [List<_Node> this._contents, String this._indent]);
   
   String render(_Context cntxt) {
     return (_render(cntxt) ?? '').toString();
   }
   
+  List<_Node> renderPartials(Map<String, CompiledTemplate> partials) {
+    switch (_type) {
+      case _NodeType.partial:
+        CompiledTemplate partial = partials[_data];
+        if (partial == null) return [];
+        
+        if (_indent != null && _indent.isNotEmpty) {
+          List<_Node> nodes = [];
+          bool lastWasNewline = true; //Start off true to add indent to first line
+          for (_Node n in partial._nodes) {
+            if (lastWasNewline) {
+              nodes.add(new _Node(_indent, _NodeType.text));
+            }
+            nodes.add(n);
+            lastWasNewline = n._type == _NodeType.text && n._data[n._data.length-1] == '\n';
+          }
+          return nodes;
+        } else {
+          // If there's no indent to apply, don't bother
+          return partial._nodes;
+        }
+      case _NodeType.section:
+      case _NodeType.inverted:
+        List<_Node> nodes = [];
+        for (_Node n in _contents) {
+          nodes.addAll(n.renderPartials(partials));
+        }
+        return [new _Node(_data, _type, nodes)];
+      default:
+        return [new _Node(_data, _type, _contents, _indent)];
+    }
+  }
+  
   Object _render(_Context cntxt) {
-    switch (type) {
+    switch (_type) {
       case _NodeType.text: return _data;
       
       case _NodeType.interpolation: return _escaper.convert((cntxt.get(_data) ?? '').toString());
@@ -24,6 +57,9 @@ class _Node {
       
       case _NodeType.section:  return _renderSection(cntxt);
       case _NodeType.inverted: return _renderInvertedSection(cntxt);
+      
+      // When doing a normal render, ignore partials -- users should use `CompiledTemplate.compileWithPartials`
+      case _NodeType.partial: return '';
       
       // Comments and Delimiter changes shouldn't be rendered
       case _NodeType.delimiter: return '';
@@ -81,8 +117,8 @@ class _Node {
   bool _isTruthy(Object o) {
     if (o == null) return false;
     if (o is bool) return o;
-    if (o is List) return o.length > 0;
-    if (o is Map)  return o.length > 0;
+    if (o is List) return o.isNotEmpty;
+    if (o is Map)  return o.isNotEmpty;
     return true;
   }
 }
@@ -116,6 +152,8 @@ enum _NodeType {
   section,    // Block section
   inverted,   // Inverted section
   sectionEnd, // End of section
+  
+  partial, // Partial
   
   // Not rendered:
   delimiter,
