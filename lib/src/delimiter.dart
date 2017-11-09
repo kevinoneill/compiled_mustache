@@ -1,4 +1,4 @@
-part of handlebars4dart;
+part of compiled_mustache;
 
 class _Delimiter {
   final String start;

@@ -1,4 +1,4 @@
-part of handlebars4dart;
+part of compiled_mustache;
 
 class _Parser {
   static final RegExp _anyChar = new RegExp(r'\S', multiLine: true);

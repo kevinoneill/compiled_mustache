@@ -1,4 +1,4 @@
-part of handlebars4dart;
+part of compiled_mustache;
 
 class _Context {
   final _Context _parent;

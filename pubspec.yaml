@@ -1,7 +1,7 @@
-name: handlebars4dart
-description: Native handlebars implementation for Dart
+name: compiled_mustache
+description: Native support for pre-compiled mustache templates
 author: thislooksfun <thislooksfun@repbot.com>
-homepage: https://github.com/thislooksfun/handlebars4dart
+homepage: https://github.com/thislooksfun/compiled_mustache
 version: 1.0.0
 dev_dependencies:
   test: "^0.12.27"

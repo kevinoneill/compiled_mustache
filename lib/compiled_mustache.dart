@@ -1,4 +1,4 @@
-library handlebars4dart;
+library compiled_mustache;
 
 import 'dart:io';
 import 'dart:convert';

@@ -1,4 +1,4 @@
-part of handlebars4dart;
+part of compiled_mustache;
 
 CompiledTemplate compile(String tmplt) {
   _Parser p = new _Parser(tmplt);

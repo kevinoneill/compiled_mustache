@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:handlebars4dart/handlebars4dart.dart' show compile, CompiledTemplate;
+import 'package:compiled_mustache/compiled_mustache.dart' show compile, CompiledTemplate;
 import 'package:test/test.dart';
 import 'package:yaml/yaml.dart';
 import 'package:path/path.dart' as path;
