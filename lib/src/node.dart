@@ -9,57 +9,25 @@ class _Node {
   final List<_Node> _contents;
   final String _indent;
   
+  bool _recursivePartal = false;
+  
   _Node(String this._data, _NodeType this._type, [List<_Node> this._contents, String this._indent]);
   
-  String render(_Context cntxt) {
-    return (_render(cntxt) ?? '').toString();
+  String render(_Context cntxt, CompiledTemplate partialProvider(String name), String indent) {
+    return (_render(cntxt, partialProvider, indent) ?? '').toString();
   }
   
-  List<_Node> renderPartials(Map<String, CompiledTemplate> partials) {
+  Object _render(_Context cntxt, CompiledTemplate partialProvider(String name), String indent) {
     switch (_type) {
-      case _NodeType.partial:
-        CompiledTemplate partial = partials[_data];
-        if (partial == null) return [];
-        
-        if (_indent != null && _indent.isNotEmpty) {
-          List<_Node> nodes = [];
-          bool lastWasNewline = true; //Start off true to add indent to first line
-          for (_Node n in partial._nodes) {
-            if (lastWasNewline) {
-              nodes.add(new _Node(_indent, _NodeType.text));
-            }
-            nodes.add(n);
-            lastWasNewline = n._type == _NodeType.text && n._data[n._data.length-1] == '\n';
-          }
-          return nodes;
-        } else {
-          // If there's no indent to apply, don't bother
-          return partial._nodes;
-        }
-      case _NodeType.section:
-      case _NodeType.inverted:
-        List<_Node> nodes = [];
-        for (_Node n in _contents) {
-          nodes.addAll(n.renderPartials(partials));
-        }
-        return [new _Node(_data, _type, nodes)];
-      default:
-        return [new _Node(_data, _type, _contents, _indent)];
-    }
-  }
-  
-  Object _render(_Context cntxt) {
-    switch (_type) {
-      case _NodeType.text: return _data;
+      case _NodeType.text: return _data.replaceAll('\n', '\n$indent');
       
       case _NodeType.interpolation: return _escaper.convert((cntxt.get(_data) ?? '').toString());
       case _NodeType.raw:           return cntxt.get(_data);
       
-      case _NodeType.section:  return _renderSection(cntxt);
-      case _NodeType.inverted: return _renderInvertedSection(cntxt);
+      case _NodeType.section:  return _renderSection(cntxt, partialProvider, indent);
+      case _NodeType.inverted: return _renderInvertedSection(cntxt, partialProvider, indent);
       
-      // When doing a normal render, ignore partials -- users should use `CompiledTemplate.compileWithPartials`
-      case _NodeType.partial: return '';
+      case _NodeType.partial: return partialProvider(_data)?._render(cntxt, partialProvider, indent + (_indent ?? ''));
       
       // Comments and Delimiter changes shouldn't be rendered
       case _NodeType.delimiter: return '';
@@ -70,38 +38,38 @@ class _Node {
     }
   }
   
-  String _renderSection(_Context context) {
+  String _renderSection(_Context context, CompiledTemplate partialProvider(String name), String indent) {
     _Context cntxt = context.subContext(_data);
     if (cntxt == null || (cntxt._map == null && !_isTruthy(cntxt.get('.')))) {
       return '';
     }
     
     if (cntxt.get('.') is List<Object>) {
-      return _renderSectionList(cntxt);
+      return _renderSectionList(cntxt, partialProvider, indent);
     } else {
-      return _renderSectionObj(cntxt);
+      return _renderSectionObj(cntxt, partialProvider, indent);
     }
   }
   
-  String _renderSectionObj(_Context cntxt) {
+  String _renderSectionObj(_Context cntxt, CompiledTemplate partialProvider(String name), String indent) {
     String s = '';
     for (_Node n in _contents) {
-      s += n.render(cntxt);
+      s += n.render(cntxt, partialProvider, indent);
     }
     return s;
   }
   
-  String _renderSectionList(_Context context) {
+  String _renderSectionList(_Context context, CompiledTemplate partialProvider(String name), String indent) {
     String s = '';
     List<Object> l = context.get('.');
     for (Object o in l) {
       _Context cntxt = new _Context(o, context);
-      s += _renderSectionObj(cntxt);
+      s += _renderSectionObj(cntxt, partialProvider, indent);
     }
     return s;
   }
   
-  String _renderInvertedSection(_Context cntxt) {
+  String _renderInvertedSection(_Context cntxt, CompiledTemplate partialProvider(String name), String indent) {
     Object o = cntxt.get(_data);
     if (_isTruthy(o)) {
       return '';
@@ -109,7 +77,7 @@ class _Node {
     
     String s = '';
     for (_Node n in _contents) {
-      s += n.render(cntxt);
+      s += n.render(cntxt, partialProvider, indent);
     }
     return s;
   }

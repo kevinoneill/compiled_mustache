@@ -40,12 +40,8 @@ void runSpec(String name, YamlNode spec) {
 
 void runTest(YamlNode t) {
   test(t['name'], () {
-    Map<String, Object> partials = t['partials']?.value;
     CompiledTemplate ct = compile(t['template']);
-    if (partials != null) {
-      ct = ct.compileWithPartials(partials);
-    }
-    String r = ct.render(t['data'].value);
+    String r = ct.render(t['data'].value, t['partials']?.value);
     expect(r, equals(t['expected']));
   });
 }
