@@ -1,3 +1,5 @@
+/// A pre-compiler for [mustache](http://mustache.github.io) templates.
+
 library compiled_mustache;
 
 import 'dart:io';
