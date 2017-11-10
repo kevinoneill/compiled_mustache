@@ -11,7 +11,7 @@ class CompiledTemplate {
   
   /// Render this template using the given context and partials.
   ///
-  /// This is different from [renderWithPartialsProvider] because it uses a static [Map]
+  /// This is different from [renderWithPartialProvider] because it uses a static [Map]
   /// from which to pull the partials. This is useful if you are defining all the partials
   /// in your code.
   String render(Map<String, Object> context, Map<String, Object> partials) {
@@ -38,7 +38,7 @@ class CompiledTemplate {
   /// This is different from [render] because instead of a static [Map] of partials
   /// it calls the provided getter each time it needs a partial. This can be used to cache partials if
   /// they are being loaded off disk.
-  String renderWithPartialsProvider(Map<String, Object> context, CompiledTemplate partialProvider(String name)) {
+  String renderWithPartialProvider(Map<String, Object> context, CompiledTemplate partialProvider(String name)) {
     return _render(new _Context(context), partialProvider);
   }
   
