@@ -47,7 +47,7 @@ class _Parser {
       if (type == _NodeType.comment) {
         _skipNode = true;
         if (processStandaloneTag()) {
-          // Comment was on it's own line, indicies have already been updated
+          // Comment was on it's own line, indicies have already been updated.
           continue;
         }
       }
@@ -78,20 +78,20 @@ class _Parser {
         if (processStandaloneTag()) {
           _delim = newDelim;
           newDelim = null;
-          // Comment was on it's own line, indicies have already been updated
+          // Comment was on it's own line, indicies have already been updated.
           continue;
         }
       }
       
       if (!(isOnOwnLine() && ignoreOwnLined(type)) && _openIndex > 0) {
-        // Capture the stuff before the tag
+        // Capture the stuff before the tag.
         _nodes.add(new _Node(_tmplt.substring(_nextStartIndex, _openIndex), _NodeType.text));
       }
       
       if (type == _NodeType.interpolation) {
         processInterpolation();
       } else {
-        // If the type isn't a straight interpolation, it has an extra char at the beginning
+        // If the type isn't a straight interpolation, it has an extra char at the beginning.
         name = name.substring(1).trim();
       }
       
@@ -103,7 +103,7 @@ class _Parser {
         _skipNode = true;
         
         if (processStandaloneTag()) {
-          // Section start was on it's own line, indicies have already been updated
+          // Section start was on it's own line, indicies have already been updated.
           continue;
         }
       }
@@ -120,13 +120,13 @@ class _Parser {
         _skipNode = true;
         
         if (processStandaloneTag()) {
-          // Section start was on it's own line, indicies have already been updated
+          // Section start was on it's own line, indicies have already been updated.
           continue;
         }
       }
       
       if (type == _NodeType.partial) {
-        // Partial was on it's own line, indicies have already been updated
+        // Partial was on it's own line, indicies have already been updated.
         if (processPartial()) {
           continue;
         }
@@ -144,7 +144,7 @@ class _Parser {
     }
     
     if (_nextStartIndex < _tmplt.length) {
-      // We've reached the end, and there's still stuff left
+      // We've reached the end, and there's still stuff left.
       _nodes.add(new _Node(_tmplt.substring(_nextStartIndex), _NodeType.text));
     }
     
@@ -181,7 +181,7 @@ class _Parser {
       int endOfClose = _closeIndex + _delim.end.length;
       int nextNewlineIndex = endOfClose < _tmplt.length ? _tmplt.indexOf(_newline, _closeIndex + _delim.end.length) : _tmplt.length;
       
-      // If the 'next' returns -1, it's reached the end of the string
+      // If the 'next' returns -1, it's reached the end of the string.
       if (nextNewlineIndex == -1) nextNewlineIndex = _tmplt.length;
       
       _nodes.add(new _Node(_tmplt.substring(_nextStartIndex, lastNewlineIndex + 1), _NodeType.text));
@@ -202,7 +202,7 @@ class _Parser {
     int nextCharIndex    = endOfClose < _tmplt.length ? _tmplt.indexOf(_anyChar, _closeIndex + _delim.end.length) : _tmplt.length;
     int nextNewlineIndex = endOfClose < _tmplt.length ? _tmplt.indexOf(_newline, _closeIndex + _delim.end.length) : _tmplt.length;
     
-    // If either of the 'nexts' returns -1, it's reached the end of the string
+    // If either of the 'nexts' returns -1, it's reached the end of the string.
     if (nextCharIndex    == -1) nextCharIndex    = _tmplt.length;
     if (nextNewlineIndex == -1) nextNewlineIndex = _tmplt.length;
     
@@ -217,7 +217,7 @@ class _Parser {
     int endOfClose = _closeIndex + _delim.end.length;
     int nextNewlineIndex = endOfClose < _tmplt.length ? _tmplt.indexOf(_newline, _closeIndex + _delim.end.length) : _tmplt.length;
     
-    // If the 'next' returns -1, it's reached the end of the string
+    // If the 'next' returns -1, it's reached the end of the string.
     if (nextNewlineIndex == -1) nextNewlineIndex = _tmplt.length;
     
     _nodes.add(new _Node(_tmplt.substring(_nextStartIndex, lastNewlineIndex + 1), _NodeType.text));

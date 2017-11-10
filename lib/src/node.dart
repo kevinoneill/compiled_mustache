@@ -29,11 +29,11 @@ class _Node {
       
       case _NodeType.partial: return partialProvider(_data)?._render(cntxt, partialProvider, indent + (_indent ?? ''));
       
-      // Comments and Delimiter changes shouldn't be rendered
+      // Comments and Delimiter changes shouldn't be rendered.
       case _NodeType.delimiter: return '';
       case _NodeType.comment:   return '';
       
-      // If none of the above types match, do nothing
+      // If none of the above types match, do nothing.
       default: return '';
     }
   }
@@ -100,28 +100,28 @@ _NodeType _nodeTypeFromChar(String c) {
   }
   
   switch (c) {
-    case '&': return _NodeType.raw;       // raw interpolation (no escape)
-    case '!': return _NodeType.comment;   // comment
-    case '=': return _NodeType.delimiter; // new delimiter
-    case '>': return _NodeType.partial;   // partial
-    case '#': return _NodeType.section;   // section start
-    case '^': return _NodeType.inverted;  // inverted section start
-    case '/': return _NodeType.sectionEnd;// section end
+    case '&': return _NodeType.raw;        // Raw interpolation (no escape).
+    case '!': return _NodeType.comment;    // Comment.
+    case '=': return _NodeType.delimiter;  // New delimiter.
+    case '>': return _NodeType.partial;    // Partial.
+    case '#': return _NodeType.section;    // Section start.
+    case '^': return _NodeType.inverted;   // Inverted section start.
+    case '/': return _NodeType.sectionEnd; // Section end.
   }
   return _NodeType.interpolation;
 }
 
 enum _NodeType {
-  text, // Raw text
+  text, // Raw text.
   
-  interpolation, // Interpolated var (escaped)
-  raw,           // Interpolated var (not escaped)
+  interpolation, // Interpolated var (escaped).
+  raw,           // Interpolated var (not escaped).
   
-  section,    // Block section
-  inverted,   // Inverted section
-  sectionEnd, // End of section
+  section,    // Block section.
+  inverted,   // Inverted section.
+  sectionEnd, // End of section.
   
-  partial, // Partial
+  partial, // Partial.
   
   // Not rendered:
   delimiter,

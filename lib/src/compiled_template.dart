@@ -1,6 +1,6 @@
 part of compiled_mustache;
 
-/// A compiled mustache template
+/// A compiled mustache template.
 class CompiledTemplate {
   List<_Node> _nodes;
   
@@ -9,7 +9,7 @@ class CompiledTemplate {
     _consolidateTextNodes();
   }
   
-  /// Render this template using the given context and partials
+  /// Render this template using the given context and partials.
   ///
   /// This is different from [renderWithPartialsProvider] because it uses a static [Map]
   /// from which to pull the partials. This is useful if you are defining all the partials
@@ -18,7 +18,7 @@ class CompiledTemplate {
     if (partials == null) {
       return _render(new _Context(context), (n) => null);
     } else {
-      // Make sure all partials are of type `CompiledPartial`
+      // Make sure all partials are of type [CompiledPartial].
       Map<String, CompiledTemplate> compiledPartials = {};
       for (String n in partials.keys) {
         Object o = partials[n];
@@ -33,7 +33,7 @@ class CompiledTemplate {
     }
   }
   
-  /// Render this template using the given context and partialsProvider
+  /// Render this template using the given context and partialsProvider.
   ///
   /// This is different from [render] because instead of a static [Map] of partials
   /// it calls the provided getter each time it needs a partial. This can be used to cache partials if
@@ -48,12 +48,12 @@ class CompiledTemplate {
       s += n.render(cntxt, partialProvider, indent);
     }
     
-    // Remove indentation after last line (if it ends in a newline, don't indent the next line)
+    // Remove indentation after last line (if it ends in a newline, don't indent the next line).
     if (s.lastIndexOf('\n$indent') == s.length - '\n$indent'.length) {
       s = s.substring(0, s.length - indent.length);
     }
     
-    // Indent first line
+    // Indent first line.
     return indent + s;
   }
   
@@ -70,7 +70,7 @@ class CompiledTemplate {
   }
   
   _Node _cleanupNode(_Node n) {
-    if (n._data == null || n._data.isEmpty) return null; //Invalid / empty node, ignore it
+    if (n._data == null || n._data.isEmpty) return null; //Invalid / empty node, ignore it.
     
     switch (n._type) {
       case _NodeType.section:
