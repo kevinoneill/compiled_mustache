@@ -5,20 +5,13 @@ import 'package:yaml/yaml.dart';
 import 'package:path/path.dart' as path;
 
 void main() {
-  var specs = new Directory('test/specs').listSync();
+  var specs = new Directory('test/spec/specs').listSync();
   for (FileSystemEntity file in specs) {
     if (file is File && path.extension(file.path) == ".yml") {
       String name = path.basenameWithoutExtension(file.path);
       
-      if (false
-      //  || name == '~lambdas'
-       || name == 'comments'      // Done
-       || name == 'delimiters'    // Done
-       || name == 'interpolation' // Done
-       || name == 'inverted'      // Done
-       || name == 'partials'      // Done
-       || name == 'sections'      // Done
-        ) {
+      // Lambdas are not yet implemented, skip them
+      if (name != '~lambdas') {
         YamlNode spec = loadYaml((file as File).readAsStringSync());
         runSpec(name, spec);
       }
