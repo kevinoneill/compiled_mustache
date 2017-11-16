@@ -5,43 +5,43 @@ Benchmarks
 
 ## compile
 ```
-CompileNoVars(RunTime): 4.0204399165356675 us.
-CompileSmallVars(RunTime): 25.893990004919857 us.
-CompileSmallPartials(RunTime): 44.298750775228136 us.
-CompileLargeVars(RunTime): 392.61876717707105 us.
-CompileLargePartials(RunTime): 493.2182490752158 us.
-CompileGiantVars(RunTime): 4104.508196721312 us.
-CompileGiantPartials(RunTime): 5298.941798941799 us.
+NoVars(RunTime): 3.9501725237849765 us.
+SmallVars(RunTime): 27.6537201166987 us.
+SmallPartials(RunTime): 45.03287399801855 us.
+LargeVars(RunTime): 389.25652004671076 us.
+LargePartials(RunTime): 495.6629491945477 us.
+GiantVars(RunTime): 4123.711340206186 us.
+GiantPartials(RunTime): 5327.127659574468 us.
 ```
 
 ## compileAndRender
 ```
-CompileNoVars(RunTime): 14.513366810832776 us.
-CompileAndRenderSmall(RunTime): 46.0182692528934 us.
-CompileAndRenderLarge(RunTime): 896.8609865470852 us.
-CompileAndRenderGiant(RunTime): 26592.105263157893 us.
+NoVars(RunTime): 14.37525156690242 us.
+SmallVars(RunTime): 44.90749056942698 us.
+LargeVars(RunTime): 863.1851532153647 us.
+GiantVars(RunTime): 25556.962025316454 us.
 ```
 
 ## render
 ```
-RenderNoVars(RunTime): 10.21121906638824 us.
-RenderSmallVars(RunTime): 19.269307846462155 us.
-RenderLargeVars(RunTime): 492.7322000492732 us.
-RenderGiantVars(RunTime): 20979.166666666668 us.
+NoVars(RunTime): 10.211062665291577 us.
+SmallVars(RunTime): 18.905021173623716 us.
+LargeVars(RunTime): 463.9294827186268 us.
+GiantVars(RunTime): 20591.836734693876 us.
 ```
 
 ## renderWithPartialProvider
 ```
-RenderNoVars(RunTime): 8.977627751642906 us.
-RenderSmallPartials(RunTime): 21.476048836535053 us.
-RenderLargePartials(RunTime): 495.6629491945477 us.
-RenderGiantPartials(RunTime): 18281.81818181818 us.
+NoPartials(RunTime): 8.89655970036387 us.
+SmallPartials(RunTime): 21.22669044055996 us.
+LargePartials(RunTime): 454.1326067211626 us.
+GiantPartials(RunTime): 17145.299145299145 us.
 ```
 
 ## renderWithPartials
 ```
-RenderNoVars(RunTime): 10.151872005197758 us.
-RenderSmallPartials(RunTime): 24.596010527092506 us.
-RenderLargePartials(RunTime): 523.4231876472128 us.
-RenderGiantPartials(RunTime): 17561.40350877193 us.
+NoPartials(RunTime): 10.074957685177722 us.
+SmallPartials(RunTime): 25.14964036014285 us.
+LargePartials(RunTime): 513.6106831022086 us.
+GiantPartials(RunTime): 17504.347826086956 us.
 ```

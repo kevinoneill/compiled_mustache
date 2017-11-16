@@ -7,24 +7,24 @@ var small  = new File('./benchmark/helper/small-vars.mustache' ).readAsStringSyn
 var large  = new File('./benchmark/helper/large-vars.mustache' ).readAsStringSync();
 var giant  = new File('./benchmark/helper/giant-vars.mustache' ).readAsStringSync();
 
-class CompileNoVarsBenchmark extends BenchmarkBase {
-  const CompileNoVarsBenchmark() : super("CompileNoVars");
+class NoVarsBenchmark extends BenchmarkBase {
+  const NoVarsBenchmark() : super("NoVars");
   
   void run() {
     var ct = compile(noVars).render({}, {});
   }
 }
 
-class CompileAndRenderSmallBenchmark extends BenchmarkBase {
-  const CompileAndRenderSmallBenchmark() : super("CompileAndRenderSmall");
+class SmallVarsBenchmark extends BenchmarkBase {
+  const SmallVarsBenchmark() : super("SmallVars");
   
   void run() {
     var ct = compile(small).render({'item': 'a thing!'}, {});
   }
 }
 
-class CompileAndRenderLargeBenchmark extends BenchmarkBase {
-  const CompileAndRenderLargeBenchmark() : super("CompileAndRenderLarge");
+class LargeVarsBenchmark extends BenchmarkBase {
+  const LargeVarsBenchmark() : super("LargeVars");
   
   void run() {
     var ct = compile(large).render({ //vars
@@ -45,8 +45,8 @@ class CompileAndRenderLargeBenchmark extends BenchmarkBase {
   }
 }
 
-class CompileAndRenderGiantBenchmark extends BenchmarkBase {
-  const CompileAndRenderGiantBenchmark() : super("CompileAndRenderGiant");
+class GiantVarsBenchmark extends BenchmarkBase {
+  const GiantVarsBenchmark() : super("GiantVars");
   
   void run() {
     var ct = compile(giant).render({ //vars
@@ -68,8 +68,8 @@ class CompileAndRenderGiantBenchmark extends BenchmarkBase {
 }
 
 main() {
-  new CompileNoVarsBenchmark().report();
-  new CompileAndRenderSmallBenchmark().report();
-  new CompileAndRenderLargeBenchmark().report();
-  new CompileAndRenderGiantBenchmark().report();
+  new NoVarsBenchmark().report();
+  new SmallVarsBenchmark().report();
+  new LargeVarsBenchmark().report();
+  new GiantVarsBenchmark().report();
 }
