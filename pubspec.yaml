@@ -6,3 +6,4 @@ version: "1.0.0-beta1"
 dev_dependencies:
   test: "^0.12.27"
   benchmark_harness: ">=1.0.0 <2.0.0"
+  grinder: "^0.8.0"
