@@ -11,32 +11,32 @@ Map<String, CompiledPartial> compiledPartials = {};
 
 var pp = (String n) => compiledPartials[n];
 
-class RenderNoVarsBenchmark extends BenchmarkBase {
-  const RenderNoVarsBenchmark() : super("RenderNoVars");
+class NoPartialsBenchmark extends BenchmarkBase {
+  const NoPartialsBenchmark() : super("NoPartials");
   
   void run() {
     var out = noVars.renderWithPartialProvider({}, pp);
   }
 }
 
-class RenderSmallPartialsBenchmark extends BenchmarkBase {
-  const RenderSmallPartialsBenchmark() : super("RenderSmallPartials");
+class SmallPartialsBenchmark extends BenchmarkBase {
+  const SmallPartialsBenchmark() : super("SmallPartials");
   
   void run() {
     var out = small.renderWithPartialProvider({}, pp);
   }
 }
 
-class RenderLargePartialsBenchmark extends BenchmarkBase {
-  const RenderLargePartialsBenchmark() : super("RenderLargePartials");
+class LargePartialsBenchmark extends BenchmarkBase {
+  const LargePartialsBenchmark() : super("LargePartials");
   
   void run() {
     var out = large.renderWithPartialProvider({}, pp);
   }
 }
 
-class RenderGiantPartialsBenchmark extends BenchmarkBase {
-  const RenderGiantPartialsBenchmark() : super("RenderGiantPartials");
+class GiantPartialsBenchmark extends BenchmarkBase {
+  const GiantPartialsBenchmark() : super("GiantPartials");
   
   void run() {
     var out = giant.renderWithPartialProvider({}, pp);
@@ -65,8 +65,8 @@ main() {
     compiledPartials[n] = compile(partials[n]);
   }
   
-  new RenderNoVarsBenchmark().report();
-  new RenderSmallPartialsBenchmark().report();
-  new RenderLargePartialsBenchmark().report();
-  new RenderGiantPartialsBenchmark().report();
+  new NoPartialsBenchmark().report();
+  new SmallPartialsBenchmark().report();
+  new LargePartialsBenchmark().report();
+  new GiantPartialsBenchmark().report();
 }
