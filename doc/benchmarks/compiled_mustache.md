@@ -7,58 +7,58 @@ Benchmarks for compiled_mustache v1.0.0-beta1
 ## compile
 |Name|Time (in μs)|
 |----|-----------:|
-|NoVars|`4.24577068`|
-|SmallVars|`27.28289635`|
-|SmallPartials|`45.47108039`|
-|LargeVars|`404.36716538`|
-|LargePartials|`511.77072671`|
-|GiantVars|`4282.05128205`|
-|GiantPartials|`5479.45205479`|
+|NoVars|`4.12794993`|
+|SmallVars|`26.12910390`|
+|SmallPartials|`44.43851930`|
+|LargeVars|`395.41320680`|
+|LargePartials|`498.25610363`|
+|GiantVars|`4119.34156378`|
+|GiantPartials|`5358.28877005`|
 
 ## compileAndRender
 |Name|Time (in μs)|
 |----|-----------:|
-|NoVars|`14.86369987`|
-|SmallVars|`48.04689376`|
-|LargeVars|`925.49745488`|
-|GiantVars|`27643.83561643`|
+|NoVars|`14.31751963`|
+|SmallVars|`46.08719697`|
+|LargeVars|`902.11998195`|
+|GiantVars|`26813.33333333`|
 
 ## compileAndRenderWithPartialProvider
 |Name|Time (in μs)|
 |----|-----------:|
-|NoPartials|`13.47954142`|
-|SmallPartials|`68.32701308`|
-|LargePartials|`1049.86876640`|
-|GiantPartials|`26539.47368421`|
+|NoPartials|`13.25811562`|
+|SmallPartials|`65.60818790`|
+|LargePartials|`1014.19878296`|
+|GiantPartials|`25782.05128205`|
 
 ## compileAndRenderWithPartialsMap
 |Name|Time (in μs)|
 |----|-----------:|
-|NoPartials|`14.74469559`|
-|SmallPartials|`71.72057663`|
-|LargePartials|`1101.32158590`|
-|GiantPartials|`26246.75324675`|
+|NoPartials|`14.22373942`|
+|SmallPartials|`69.92518005`|
+|LargePartials|`1046.02510460`|
+|GiantPartials|`25653.84615384`|
 
 ## render
 |Name|Time (in μs)|
 |----|-----------:|
-|NoVars|`10.30311772`|
-|SmallVars|`20.16311963`|
-|LargeVars|`505.30570995`|
-|GiantVars|`21569.89247311`|
+|NoVars|`10.44762864`|
+|SmallVars|`19.56506852`|
+|LargeVars|`478.69794159`|
+|GiantVars|`21168.42105263`|
 
 ## renderWithPartialProvider
 |Name|Time (in μs)|
 |----|-----------:|
-|NoPartials|`9.11897065`|
-|SmallPartials|`22.25857789`|
-|LargePartials|`518.26898160`|
-|GiantPartials|`19346.15384615`|
+|NoPartials|`8.83813833`|
+|SmallPartials|`21.55242087`|
+|LargePartials|`497.63622791`|
+|GiantPartials|`18327.27272727`|
 
 ## renderWithPartialsMap
 |Name|Time (in μs)|
 |----|-----------:|
-|NoPartials|`10.45292525`|
-|SmallPartials|`26.31786720`|
-|LargePartials|`556.94792536`|
-|GiantPartials|`18657.40740740`|
+|NoPartials|`10.52831062`|
+|SmallPartials|`27.42506102`|
+|LargePartials|`542.59359739`|
+|GiantPartials|`18504.58715596`|

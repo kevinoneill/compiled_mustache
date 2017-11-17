@@ -7,31 +7,31 @@ Comparison of compiled_mustache v1.0.0-beta1 and mustache4dart v2.1.0
 ## compileAndRender vs render
 |Name|compiled_mustache time (in μs)|mustache4dart time (in μs)|Difference factor|
 |----|-----------------------------:|-------------------------:|----------------:|
-|NoVars|`14.86369987`|`72.19434718`|`4.857x`|
-|SmallVars|`48.04689376`|`121.17540139`|`2.522x`|
-|LargeVars|`925.49745488`|`7290.90909090`|`7.877x`|
-|GiantVars|`27643.83561643`|`79423.07692307`|`2.873x`|
+|NoVars|`14.31751963`|`69.60395350`|`4.861x`|
+|SmallVars|`46.08719697`|`118.61692663`|`2.573x`|
+|LargeVars|`902.11998195`|`7197.84172661`|`7.978x`|
+|GiantVars|`26813.33333333`|`76961.53846153`|`2.870x`|
 
 ## compileAndRenderWithPartialProvider vs renderWithPartialProvider
 |Name|compiled_mustache time (in μs)|mustache4dart time (in μs)|Difference factor|
 |----|-----------------------------:|-------------------------:|----------------:|
-|NoPartials|`13.47954142`|`71.38268256`|`5.295x`|
-|SmallPartials|`68.32701308`|`137.72207684`|`2.015x`|
-|LargePartials|`1049.86876640`|`7414.81481481`|`7.062x`|
-|GiantPartials|`26539.47368421`|`80760.00000000`|`3.043x`|
+|NoPartials|`13.25811562`|`68.85629690`|`5.193x`|
+|SmallPartials|`65.60818790`|`131.77834881`|`2.008x`|
+|LargePartials|`1014.19878296`|`7250.00000000`|`7.148x`|
+|GiantPartials|`25782.05128205`|`79038.46153846`|`3.065x`|
 
 ## render vs render
 |Name|compiled_mustache time (in μs)|mustache4dart time (in μs)|Difference factor|
 |----|-----------------------------:|-------------------------:|----------------:|
-|NoVars|`10.30311772`|`72.19434718`|`7.007x`|
-|SmallVars|`20.16311963`|`121.17540139`|`6.009x`|
-|LargeVars|`505.30570995`|`7290.90909090`|`14.428x`|
-|GiantVars|`21569.89247311`|`79423.07692307`|`3.682x`|
+|NoVars|`10.44762864`|`69.60395350`|`6.662x`|
+|SmallVars|`19.56506852`|`118.61692663`|`6.062x`|
+|LargeVars|`478.69794159`|`7197.84172661`|`15.036x`|
+|GiantVars|`21168.42105263`|`76961.53846153`|`3.635x`|
 
 ## renderWithPartialProvider vs renderWithPartialProvider
 |Name|compiled_mustache time (in μs)|mustache4dart time (in μs)|Difference factor|
 |----|-----------------------------:|-------------------------:|----------------:|
-|NoPartials|`9.11897065`|`71.38268256`|`7.827x`|
-|SmallPartials|`22.25857789`|`137.72207684`|`6.187x`|
-|LargePartials|`518.26898160`|`7414.81481481`|`14.306x`|
-|GiantPartials|`19346.15384615`|`80760.00000000`|`4.174x`|
+|NoPartials|`8.83813833`|`68.85629690`|`7.790x`|
+|SmallPartials|`21.55242087`|`131.77834881`|`6.114x`|
+|LargePartials|`497.63622791`|`7250.00000000`|`14.568x`|
+|GiantPartials|`18327.27272727`|`79038.46153846`|`4.312x`|
