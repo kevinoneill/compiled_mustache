@@ -59,18 +59,18 @@ String _repeatStr(String s, int times) {
   return o;
 }
 
-String _parseTime(String s, int keepPlaces) {
+String _parseTime(String s, int ensurePlaces) {
   var trimmed = s.substring(0, s.length-4); // remove ' us.' from end
   var dotIndex = trimmed.indexOf('.');
   if (dotIndex == -1) {
-    return trimmed + '.' + _repeatStr('0', keepPlaces);
+    return trimmed + '.' + _repeatStr('0', ensurePlaces);
   }
   
   var fromEnd = trimmed.length - dotIndex - 1;
-  if (fromEnd > keepPlaces) {
-    return trimmed.substring(0, trimmed.length - (fromEnd - keepPlaces));
-  } else if (fromEnd < keepPlaces) {
-    return trimmed + _repeatStr('0', keepPlaces - fromEnd);
+  if (fromEnd > ensurePlaces) {
+    return trimmed.substring(0, trimmed.length - (fromEnd - ensurePlaces));
+  } else if (fromEnd < ensurePlaces) {
+    return trimmed + _repeatStr('0', ensurePlaces - fromEnd);
   }
   
   return trimmed;
@@ -185,6 +185,9 @@ Future _documentComparison(Map<String, Map<String, String>> compiled_mustache_re
     'renderWithPartialProvider': 'renderWithPartialProvider'
   };
   
+  var minDiff = double.MAX_FINITE;
+  var maxDiff = 0;
+  
   for (var n in comparisons.keys) {
     var cmSuite = compiled_mustache_results[n];
     var m4dSuite = mustache4dart_results[comparisons[n]];
@@ -194,12 +197,20 @@ Future _documentComparison(Map<String, Map<String, String>> compiled_mustache_re
     contents += '|----|-----------------------------:|-------------------------:|----------------:|'; //don't end with newline because the loop below takes care of that
     
     for (var k in cmSuite.keys) {
-      var improvement = '${double.parse(m4dSuite[k])/double.parse(cmSuite[k])}';
-      contents += '\n|$k|`${cmSuite[k]}`|`${m4dSuite[k]}`|`${_parseTime(improvement, 3)}x`|';
+      var diff = double.parse(m4dSuite[k])/double.parse(cmSuite[k]);
+      if (diff < minDiff) {
+        minDiff = diff;
+      }
+      if (diff > maxDiff) {
+        maxDiff = diff;
+      }
+      var formattedDiff = _parseTime('$diff', 3);
+      contents += '\n|$k|`${cmSuite[k]}`|`${m4dSuite[k]}`|`${formattedDiff}x`|';
     }
   }
   
   await _writeToDocFile('comparison', contents);
+  await _updateReadme(_parseTime('$minDiff', 3), _parseTime('$maxDiff', 3));
 }
 
 Future _writeToDocFile(String name, String contents) async {
@@ -207,5 +218,15 @@ Future _writeToDocFile(String name, String contents) async {
   if (!file.existsSync()) {
     file.createSync(recursive: true);
   }
+  file.writeAsString(contents);
+}
+
+Future _updateReadme(String minDiff, String maxdiff) async {
+  var file = await new File('README.md');
+  if (!file.existsSync()) {
+    return;
+  }
+  String contents = file.readAsStringSync();
+  contents = contents.replaceFirst(new RegExp(r'\[\d+\.\d+-\d+\.\d+x faster\]\(doc\/benchmarks\/comparison\.md\)'), '[$minDiff-${maxdiff}x faster](doc/benchmarks/comparison.md)');
   file.writeAsString(contents);
 }
