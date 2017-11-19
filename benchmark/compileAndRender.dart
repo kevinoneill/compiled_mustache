@@ -11,7 +11,7 @@ class NoVarsBenchmark extends BenchmarkBase {
   const NoVarsBenchmark() : super("NoVars");
   
   void run() {
-    var ct = compile(noVars).render({}, {});
+    var ct = compile(noVars).render({});
   }
 }
 
@@ -19,7 +19,7 @@ class SmallVarsBenchmark extends BenchmarkBase {
   const SmallVarsBenchmark() : super("SmallVars");
   
   void run() {
-    var ct = compile(small).render({'item': 'a thing!'}, {});
+    var ct = compile(small).render({'item': 'a thing!'});
   }
 }
 
@@ -41,7 +41,7 @@ class LargeVarsBenchmark extends BenchmarkBase {
       'app-todo-js-todo-view': 'view(port)',
       'app-todo-js-localstorage-sync': 'LOCAL',
       'app-todo-js-init': 'initalizing...'
-    }, {});
+    });
   }
 }
 
@@ -63,7 +63,7 @@ class GiantVarsBenchmark extends BenchmarkBase {
       'app-todo-js-todo-view': 'view(port)',
       'app-todo-js-localstorage-sync': 'LOCAL',
       'app-todo-js-init': 'initalizing...'
-    }, {});
+    });
   }
 }
 
