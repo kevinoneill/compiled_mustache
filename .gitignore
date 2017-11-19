@@ -27,3 +27,6 @@ doc/api/
 pubspec.lock
 
 .idea
+
+# GitHub Wiki
+*.wiki/
