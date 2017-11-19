@@ -14,7 +14,7 @@ class CompiledTemplate {
   /// This is different from [renderWithPartialProvider] because it uses a static [Map]
   /// from which to pull the partials. This is useful if you are defining all the partials
   /// in your code.
-  String render(Map<String, Object> context, Map<String, Object> partials) {
+  String render(Map<String, Object> context, [Map<String, Object> partials]) {
     if (partials == null) {
       return _render(new _Context(context), (n) => null);
     } else {
