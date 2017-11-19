@@ -13,8 +13,8 @@ Future benchmark() => benchmarkHelper.runBenchmarks();
 
 @Task()
 Future doc() async {
-  // ProcessResult results = await Process.run('dartdoc', []);
-  // log(results.stdout);
+  ProcessResult results = await Process.run('dartdoc', []);
+  log(results.stdout);
   await benchmarkHelper.documentBenchmarks();
 }
 
