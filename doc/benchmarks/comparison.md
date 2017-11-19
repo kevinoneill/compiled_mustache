@@ -5,45 +5,45 @@ Comparison of compiled_mustache v1.0.0-beta1 and mustache4dart v2.1.0
 
 
 ## Results  
-**Average:** 6.389x  
-**Minimum:** 2.077x  
-**Maximum:** 15.345x
+**Average:** 7.083x  
+**Minimum:** 2.083x  
+**Maximum:** 17.944x
 
 -----
 # Combined compile *and* render time
 
-### [compileAndRender](compiled_mustache.md#compileandrender) vs [render](mustache4dart.md#render)
+### [compileAndRender](compiled_mustache#compileandrender) vs [render](mustache4dart#render)
 |Name|compiled_mustache time (in μs)|mustache4dart time (in μs)|Difference factor|
 |----|-----------------------------:|-------------------------:|----------------:|
-|NoVars|`13.60081604`|`69.19457514`|`5.087x`|
-|SmallVars|`44.29580740`|`117.47430249`|`2.652x`|
-|LargeVars|`867.67895878`|`7164.28571428`|`8.256x`|
-|GiantVars|`25518.98734177`|`75629.62962962`|`2.963x`|
+|NoVars|`13.88869599`|`85.66411102`|`6.167x`|
+|SmallVars|`45.49280076`|`146.65982254`|`3.223x`|
+|LargeVars|`858.00085800`|`8583.69098712`|`10.004x`|
+|GiantVars|`25987.01298701`|`93000.00000000`|`3.578x`|
 
-### [compileAndRenderWithPartialProvider](compiled_mustache.md#compileandrenderwithpartialprovider) vs [renderWithPartialProvider](mustache4dart.md#renderwithpartialprovider)
+### [compileAndRenderWithPartialProvider](compiled_mustache#compileandrenderwithpartialprovider) vs [renderWithPartialProvider](mustache4dart#renderwithpartialprovider)
 |Name|compiled_mustache time (in μs)|mustache4dart time (in μs)|Difference factor|
 |----|-----------------------------:|-------------------------:|----------------:|
-|NoPartials|`13.12430687`|`70.71635669`|`5.388x`|
-|SmallPartials|`66.31739505`|`137.78849466`|`2.077x`|
-|LargePartials|`978.47358121`|`7223.02158273`|`7.381x`|
-|GiantPartials|`24864.19753086`|`83080.00000000`|`3.341x`|
+|NoPartials|`13.09886367`|`71.70771933`|`5.474x`|
+|SmallPartials|`64.85504896`|`135.15339910`|`2.083x`|
+|LargePartials|`1004.01606425`|`7485.07462686`|`7.455x`|
+|GiantPartials|`24876.54320987`|`80800.00000000`|`3.248x`|
 -----
 # Compare compiled_mustache's render function vs mustache4dart's.
 compile_mustache has the option to compile and cache a template, then render it later.
 This compares that functionality vs the less cacheable render function provided by mustache4dart
 
-### [render](compiled_mustache.md#render) vs [render](mustache4dart.md#render)
+### [render](compiled_mustache#render) vs [render](mustache4dart#render)
 |Name|compiled_mustache time (in μs)|mustache4dart time (in μs)|Difference factor|
 |----|-----------------------------:|-------------------------:|----------------:|
-|NoVars|`10.55381124`|`69.19457514`|`6.556x`|
-|SmallVars|`19.65389491`|`117.47430249`|`5.977x`|
-|LargeVars|`481.11618955`|`7164.28571428`|`14.890x`|
-|GiantVars|`20632.65306122`|`75629.62962962`|`3.665x`|
+|NoVars|`10.68467390`|`85.66411102`|`8.017x`|
+|SmallVars|`19.65408805`|`146.65982254`|`7.462x`|
+|LargeVars|`478.35446065`|`8583.69098712`|`17.944x`|
+|GiantVars|`20895.83333333`|`93000.00000000`|`4.450x`|
 
-### [renderWithPartialProvider](compiled_mustache.md#renderwithpartialprovider) vs [renderWithPartialProvider](mustache4dart.md#renderwithpartialprovider)
+### [renderWithPartialProvider](compiled_mustache#renderwithpartialprovider) vs [renderWithPartialProvider](mustache4dart#renderwithpartialprovider)
 |Name|compiled_mustache time (in μs)|mustache4dart time (in μs)|Difference factor|
 |----|-----------------------------:|-------------------------:|----------------:|
-|NoPartials|`9.43841434`|`70.71635669`|`7.492x`|
-|SmallPartials|`21.12266990`|`137.78849466`|`6.523x`|
-|LargePartials|`470.69898799`|`7223.02158273`|`15.345x`|
-|GiantPartials|`17919.64285714`|`83080.00000000`|`4.636x`|
+|NoPartials|`8.92351211`|`71.70771933`|`8.035x`|
+|SmallPartials|`21.74031197`|`135.15339910`|`6.216x`|
+|LargePartials|`483.90999274`|`7485.07462686`|`15.467x`|
+|GiantPartials|`17910.71428571`|`80800.00000000`|`4.511x`|

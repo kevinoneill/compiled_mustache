@@ -149,6 +149,14 @@ String _formatTime(String s, int ensurePlaces) {
 }
 
 Future documentBenchmarks() async {
+  await _document('doc');
+}
+
+Future documentBenchmarksWiki() async {
+  await _document('compiled_mustache.wiki');
+}
+
+Future _document(String folder) async {
   log('\nGenerating benchmarks.md...');
   // Document benchmark results
   Map<String, Map<String, String>> compiled_mustache_results = {};
@@ -188,12 +196,12 @@ Future documentBenchmarks() async {
   });
   
   // Generate docs
-  await _documentCompiledMustache(compiled_mustache_results);
-  await _documentMustache4Dart(mustache4dart_results);
-  await _documentComparison(compiled_mustache_results, mustache4dart_results);
+  await _documentCompiledMustache(folder, compiled_mustache_results);
+  await _documentMustache4Dart(folder, mustache4dart_results);
+  await _documentComparison(folder, compiled_mustache_results, mustache4dart_results);
 }
 
-Future _documentCompiledMustache(Map<String, Map<String, String>> results) async {
+Future _documentCompiledMustache(String folder, Map<String, Map<String, String>> results) async {
   YamlNode pubspec = loadYaml((await new File('pubspec.yaml')).readAsStringSync());
   var cmver = pubspec['version'];
   String contents =
@@ -213,10 +221,10 @@ Future _documentCompiledMustache(Map<String, Map<String, String>> results) async
     }
   }
   
-  await _writeToDocFile('compiled_mustache', contents);
+  await _writeToDocFile(folder, 'compiled_mustache', contents);
 }
 
-Future _documentMustache4Dart(Map<String, Map<String, String>> results) async {
+Future _documentMustache4Dart(String folder, Map<String, Map<String, String>> results) async {
   YamlNode pubspecLock = loadYaml((await new File('pubspec.lock')).readAsStringSync());
   var m4dver = pubspecLock['packages']['mustache4dart']['version'];
   String contents =
@@ -236,10 +244,10 @@ Future _documentMustache4Dart(Map<String, Map<String, String>> results) async {
     }
   }
   
-  await _writeToDocFile('mustache4dart', contents);
+  await _writeToDocFile(folder, 'mustache4dart', contents);
 }
 
-Future _documentComparison(Map<String, Map<String, String>> compiled_mustache_results, Map<String, Map<String, String>> mustache4dart_results) async {
+Future _documentComparison(String folder, Map<String, Map<String, String>> compiled_mustache_results, Map<String, Map<String, String>> mustache4dart_results) async {
   YamlNode pubspec = loadYaml((await new File('pubspec.yaml')).readAsStringSync());
   var cmver = pubspec['version'];
   YamlNode pubspecLock = loadYaml((await new File('pubspec.lock')).readAsStringSync());
@@ -264,7 +272,7 @@ Future _documentComparison(Map<String, Map<String, String>> compiled_mustache_re
       var cmSuite = compiled_mustache_results[n];
       var m4dSuite = mustache4dart_results[pairs[n]];
       
-      contents += '\n\n### [$n](compiled_mustache.md#${n.toString().toLowerCase()}) vs [${pairs[n]}](mustache4dart.md#${pairs[n].toString().toLowerCase()})\n';
+      contents += '\n\n### [$n](compiled_mustache#${n.toString().toLowerCase()}) vs [${pairs[n]}](mustache4dart#${pairs[n].toString().toLowerCase()})\n';
       contents += '|Name|compiled_mustache time (in μs)|mustache4dart time (in μs)|Difference factor|\n';
       contents += '|----|-----------------------------:|-------------------------:|----------------:|'; //don't end with newline because the loop below takes care of that
       
@@ -291,24 +299,28 @@ Future _documentComparison(Map<String, Map<String, String>> compiled_mustache_re
   var maxDiffStr = _formatTime('$maxDiff', 3);
   var toWrite = title + '\n\n## Results  \n**Average:** ${avgStr}x  \n**Minimum:** ${minDiffStr}x  \n**Maximum:** ${maxDiffStr}x\n' + contents;
   
-  await _writeToDocFile('comparison', toWrite);
-  await _updateReadme(minDiffStr, maxDiffStr);
+  await _writeToDocFile(folder, 'comparison', toWrite);
+  await _updateReadme(folder, minDiffStr, maxDiffStr);
 }
 
-Future _writeToDocFile(String name, String contents) async {
-  var file = await new File('doc/benchmarks/$name.md');
+Future _writeToDocFile(String folder, String name, String contents) async {
+  var file = await new File('$folder/benchmarks/$name.md');
   if (!file.existsSync()) {
     file.createSync(recursive: true);
   }
   file.writeAsString(contents);
 }
 
-Future _updateReadme(String minDiff, String maxdiff) async {
-  var file = await new File('README.md');
+Future _updateReadme(String folder, String minDiff, String maxdiff) async {
+  if (!folder.endsWith('.wiki')) {
+    return;
+  }
+  
+  var file = await new File('$folder/Home.md');
   if (!file.existsSync()) {
     return;
   }
   String contents = file.readAsStringSync();
-  contents = contents.replaceFirst(new RegExp(r'\[\d+\.\d+-\d+\.\d+x faster\]\(doc\/benchmarks\/comparison\.md\)'), '[$minDiff-${maxdiff}x faster](doc/benchmarks/comparison.md)');
+  contents = contents.replaceFirst(new RegExp(r'\[\d+\.\d+-\d+\.\d+x faster\]\(comparison\)'), '[$minDiff-${maxdiff}x faster](comparison)');
   file.writeAsString(contents);
 }
