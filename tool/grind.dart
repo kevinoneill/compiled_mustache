@@ -18,22 +18,9 @@ Future doc() async {
 }
 
 @Task()
-Future doc_benchmark() async {
-  await benchmarkHelper.documentBenchmarks();
-}
-
-@Task()
 Future doc_benchmark_wiki() async {
   await benchmarkHelper.documentBenchmarksWiki();
 }
-
-@Task()
-@Depends(doc, doc_benchmark)
-void doc_all() {}
-
-@Task()
-@Depends(doc, doc_benchmark_wiki)
-void doc_all_wiki() {}
 
 @DefaultTask()
 @Depends(test)
