@@ -4,6 +4,24 @@ import 'package:grinder/grinder.dart';
 import 'package:path/path.dart' as pathPackage;
 import 'package:yaml/yaml.dart';
 
+const _comparisons = const [
+  const {
+    'msg': 'Combined compile *and* render time',
+    'pairs': const {
+      'compileAndRender': 'render',
+      'compileAndRenderWithPartialProvider': 'renderWithPartialProvider'
+    }
+  },
+  const {
+    'msg': 'Compare compiled_mustache\'s render function vs mustache4dart\'s.\n'
+           'compile_mustache has the option to compile and cache a template, then render it later.\n'
+           'This compares that functionality vs the less cacheable render function provided by mustache4dart',
+    'pairs': const {
+      'render': 'render',
+      'renderWithPartialProvider': 'renderWithPartialProvider'
+    }
+  }
+];
 
 Future _forEachBenchmark(String path, void preProcess(String), void postProcess(String, ProcessResult)) async {
   var benchmarks = await new Directory(pathPackage.join('benchmark', path)).listSync();
@@ -22,33 +40,82 @@ Future _forEachBenchmark(String path, void preProcess(String), void postProcess(
 
 
 Future runBenchmarks() async {
-  await _runCMBenchmarks();
+  Map<String, double> processOutput(String o) {
+    var trimmed = o;
+    
+    //remove trailing newlines
+    while (trimmed[trimmed.length-1] == '\n') {
+      trimmed = trimmed.substring(0, trimmed.length-1);
+    }
+    
+    Map<String, double> tests = {};
+    for (var l in trimmed.split('\n')) {
+      var parts = l.split('(RunTime): ');
+      tests[parts[0]] = _parseTime(parts[1]);
+    }
+    
+    return tests;
+  }
+  
+  var cmBenchmarks = await _runCMBenchmarks(processOutput);
   log('');
-  await _runM4DBenchmarks();
+  var m4dBenchmarks = await _runM4DBenchmarks(processOutput);
+  
+  
+  
+  _compareBenchmarks(cmBenchmarks, m4dBenchmarks);
 }
 
-Future _runCMBenchmarks() async {
+Future<Map<String, Map<String, double>>> _runCMBenchmarks(Map<String, double> processOutput(String)) async {
+  Map<String, Map<String, double>> benchmarks = {};
   log('Running compiled_mustache benchmarks...');
-  var first = true;
   await _forEachBenchmark('', (String name) {
-    if (!first) { log('\n'); }
-    first = false;
-    log('> $name');
+    log('  $name');
   }, (String name, ProcessResult pr) {
-    log(pr.stdout);
+    var res = pr.stdout.toString();
+    benchmarks[name] = processOutput(res);
+    log('    ${res.replaceAll('\n', '\n    ')}');
   });
+  return benchmarks;
 }
 
-Future _runM4DBenchmarks() async {
+Future<Map<String, Map<String, double>>> _runM4DBenchmarks(Map<String, double> processOutput(String)) async {
+  Map<String, Map<String, double>> benchmarks = {};
   log('Running mustache4dart benchmarks...');
-  var first = true;
   await _forEachBenchmark('mustache4dart_comparison', (String name) {
-    if (!first) { log('\n'); }
-    first = false;
-    log('> $name');
+    log('  $name');
   }, (String name, ProcessResult pr) {
-    log(pr.stdout);
+    var res = pr.stdout.toString();
+    benchmarks[name] = processOutput(res);
+    log('    ${res.replaceAll('\n', '\n    ')}');
   });
+  return benchmarks;
+}
+
+void _compareBenchmarks(Map<String, Map<String, double>> compiled_mustache_results, Map<String, Map<String, double>> mustache4dart_results) {
+  log('\n> Comparing benchmarks...');
+  for (var group in _comparisons) {
+    var pairs = group['pairs'];
+    for (var n in pairs.keys) {
+      log('    $n');
+      var cmSuite = compiled_mustache_results[n];
+      var m4dSuite = mustache4dart_results[pairs[n]];
+      
+      for (var k in cmSuite.keys) {
+        var cm  = cmSuite[k];
+        var m4d = m4dSuite[k];
+        
+        var tooSlow = cm > m4d;
+        
+        log('      Comparing $k ($cm vs $m4d) : ${!tooSlow}');
+        
+        if (tooSlow) {
+          exitCode = 1;
+        }
+      }
+    }
+  }
+  
 }
 
 String _repeatStr(String s, int times) {
@@ -59,7 +126,12 @@ String _repeatStr(String s, int times) {
   return o;
 }
 
-String _parseTime(String s, int ensurePlaces) {
+double _parseTime(String s) {
+  var trimmed = s.substring(0, s.length-4);
+  return double.parse(trimmed);
+}
+
+String _formatTime(String s, int ensurePlaces) {
   var trimmed = s.substring(0, s.length-4); // remove ' us.' from end
   var dotIndex = trimmed.indexOf('.');
   if (dotIndex == -1) {
@@ -82,7 +154,7 @@ Future documentBenchmarks() async {
   Map<String, Map<String, String>> compiled_mustache_results = {};
   Map<String, Map<String, String>> mustache4dart_results = {};
   
-  Map<String, String> processOutput (String o) {
+  Map<String, String> processOutput(String o) {
     var trimmed = o;
     
     //remove trailing newlines
@@ -93,7 +165,7 @@ Future documentBenchmarks() async {
     Map<String, String> tests = {};
     for (var l in trimmed.split('\n')) {
       var parts = l.split('(RunTime): ');
-      tests[parts[0]] = _parseTime(parts[1], 8);
+      tests[parts[0]] = _formatTime(parts[1], 8);
     }
     
     return tests;
@@ -173,44 +245,54 @@ Future _documentComparison(Map<String, Map<String, String>> compiled_mustache_re
   YamlNode pubspecLock = loadYaml((await new File('pubspec.lock')).readAsStringSync());
   var m4dver = pubspecLock['packages']['mustache4dart']['version'];
   
-  String contents =
+  String title =
     '<!-- THIS FILE IS AUTOGENERATED BY \'grind doc\'; DO NOT MODIFY -->\n\n'
     'Comparison of compiled_mustache v$cmver and mustache4dart v$m4dver\n'
     '==================================================================\n';
   
-  var comparisons = {
-    'compileAndRender': 'render',
-    'compileAndRenderWithPartialProvider': 'renderWithPartialProvider',
-    'render': 'render',
-    'renderWithPartialProvider': 'renderWithPartialProvider'
-  };
-  
+  String contents = '';
   var minDiff = double.MAX_FINITE;
   var maxDiff = 0;
+  var avgSum = 0;
+  var totalCount = 0;
   
-  for (var n in comparisons.keys) {
-    var cmSuite = compiled_mustache_results[n];
-    var m4dSuite = mustache4dart_results[comparisons[n]];
+  for (var group in _comparisons) {
+    contents += '\n-----\n# ${group['msg']}';
     
-    contents += '\n\n## $n vs ${comparisons[n]}\n';
-    contents += '|Name|compiled_mustache time (in μs)|mustache4dart time (in μs)|Difference factor|\n';
-    contents += '|----|-----------------------------:|-------------------------:|----------------:|'; //don't end with newline because the loop below takes care of that
-    
-    for (var k in cmSuite.keys) {
-      var diff = double.parse(m4dSuite[k])/double.parse(cmSuite[k]);
-      if (diff < minDiff) {
-        minDiff = diff;
+    var pairs = group['pairs'];
+    for (var n in pairs.keys) {
+      var cmSuite = compiled_mustache_results[n];
+      var m4dSuite = mustache4dart_results[pairs[n]];
+      
+      contents += '\n\n### [$n](compiled_mustache.md#${n.toString().toLowerCase()}) vs [${pairs[n]}](mustache4dart.md#${pairs[n].toString().toLowerCase()})\n';
+      contents += '|Name|compiled_mustache time (in μs)|mustache4dart time (in μs)|Difference factor|\n';
+      contents += '|----|-----------------------------:|-------------------------:|----------------:|'; //don't end with newline because the loop below takes care of that
+      
+      for (var k in cmSuite.keys) {
+        var diff = double.parse(m4dSuite[k])/double.parse(cmSuite[k]);
+        if (diff < minDiff) {
+          minDiff = diff;
+        }
+        if (diff > maxDiff) {
+          maxDiff = diff;
+        }
+        avgSum += diff;
+        totalCount++;
+        var formattedDiff = _formatTime('$diff', 3);
+        contents += '\n|$k|`${cmSuite[k]}`|`${m4dSuite[k]}`|`${formattedDiff}x`|';
       }
-      if (diff > maxDiff) {
-        maxDiff = diff;
-      }
-      var formattedDiff = _parseTime('$diff', 3);
-      contents += '\n|$k|`${cmSuite[k]}`|`${m4dSuite[k]}`|`${formattedDiff}x`|';
     }
   }
   
-  await _writeToDocFile('comparison', contents);
-  await _updateReadme(_parseTime('$minDiff', 3), _parseTime('$maxDiff', 3));
+  var avg = avgSum/totalCount;
+  
+  var avgStr     = _formatTime('$avg',     3);
+  var minDiffStr = _formatTime('$minDiff', 3);
+  var maxDiffStr = _formatTime('$maxDiff', 3);
+  var toWrite = title + '\n\n## Results  \n**Average:** ${avgStr}x  \n**Minimum:** ${minDiffStr}x  \n**Maximum:** ${maxDiffStr}x\n' + contents;
+  
+  await _writeToDocFile('comparison', toWrite);
+  await _updateReadme(minDiffStr, maxDiffStr);
 }
 
 Future _writeToDocFile(String name, String contents) async {
