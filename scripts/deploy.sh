@@ -9,4 +9,5 @@ git add -A
 git commit -m "Update Benchmarks"
 git push
 
+# TODO: Hide scripts/ directory before running this
 # pub publish --dry-run
