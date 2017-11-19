@@ -7,15 +7,15 @@ Benchmarks for mustache4dart v2.1.0
 ## render
 |Name|Time (in μs)|
 |----|-----------:|
-|NoVars|`69.19457514`|
-|SmallVars|`117.47430249`|
-|LargeVars|`7164.28571428`|
-|GiantVars|`75629.62962962`|
+|NoVars|`85.66411102`|
+|SmallVars|`146.65982254`|
+|LargeVars|`8583.69098712`|
+|GiantVars|`93000.00000000`|
 
 ## renderWithPartialProvider
 |Name|Time (in μs)|
 |----|-----------:|
-|NoPartials|`70.71635669`|
-|SmallPartials|`137.78849466`|
-|LargePartials|`7223.02158273`|
-|GiantPartials|`83080.00000000`|
+|NoPartials|`71.70771933`|
+|SmallPartials|`135.15339910`|
+|LargePartials|`7485.07462686`|
+|GiantPartials|`80800.00000000`|
