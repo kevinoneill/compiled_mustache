@@ -1,6 +1,10 @@
 #!/bin/bash
 
-set -ev
+if [[ $CI == true ]]; then
+  set -ev
+else
+  set -e
+fi
 
 git clone https://github.com/thislooksfun/compiled_mustache.wiki.git
 grind doc_benchmark_wiki

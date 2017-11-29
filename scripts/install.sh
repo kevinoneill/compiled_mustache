@@ -1,6 +1,10 @@
 #!/bin/bash
 
-set -ev
+if [[ $CI == true ]]; then
+  set -ev
+else
+  set -e
+fi
 
 chmod +x scripts/build.sh
 chmod +x scripts/deploy.sh
