@@ -27,10 +27,12 @@ fi
 mkdir "deploy_staging"
 
 function cp_dep() {
-  if [ -d "$1" ]; then
-    cp -r "$1" "deploy_staging/$1"
-  else
-    cp "$1" "deploy_staging/"
+  if [ -e "$1" ]; then
+    if [ -d "$1" ]; then
+      cp -r "$1" "deploy_staging/$1"
+    else
+      cp "$1" "deploy_staging/"
+    fi
   fi
 }
 
