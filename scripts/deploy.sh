@@ -8,12 +8,16 @@ fi
 
 ./scripts/install.sh
 
-git clone https://github.com/thislooksfun/compiled_mustache.wiki.git
+if [[ $CI == true ]]; then
+  git clone "https://thislooksfun:$gh_token@github.com/thislooksfun/compiled_mustache.wiki.git"
+else
+  git clone "https://github.com/thislooksfun/compiled_mustache.wiki.git"
+fi
 grind doc_benchmark_wiki
 cd compiled_mustache.wiki
 git add -A
 git commit -m "Update Benchmarks"
-git push
+cd ..
 
 # If it already exists, clean it out
 if [ -d "deploy_staging" ]; then
@@ -64,4 +68,9 @@ cat <<EOF > ~/.pub-cache/credentials.json
 EOF
 fi
 
+
+# Final publish phase
 pub publish --force    # Force to bypass 'are you sure' check
+
+cd ../compiled_mustache.wiki
+git push origin master
