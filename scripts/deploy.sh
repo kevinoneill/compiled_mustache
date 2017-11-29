@@ -45,6 +45,7 @@ pub publish --dry-run  # Dry run to ensure no errors / warnings
 
 mkdir -p .pub-cache
 
+if [[ $CI == true ]]; then
 # Setup Pub's authentication
 cat <<EOF > ~/.pub-cache/credentials.json
 {
@@ -55,5 +56,6 @@ cat <<EOF > ~/.pub-cache/credentials.json
   "expiration":$expiration
 }
 EOF
+fi
 
 pub publish --force    # Force to bypass 'are you sure' check
