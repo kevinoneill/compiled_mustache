@@ -28,5 +28,8 @@ pubspec.lock
 
 .idea
 
+# Deploy script results
+deploy_staging/
+
 # GitHub Wiki
 *.wiki/
