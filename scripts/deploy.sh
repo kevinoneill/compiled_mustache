@@ -8,7 +8,11 @@ fi
 
 ./scripts/install.sh
 
-git clone "https://thislooksfun:$gh_token@github.com/thislooksfun/compiled_mustache.wiki.git"
+if [[ $CI == true ]]; then
+  git clone "https://thislooksfun:$gh_token@github.com/thislooksfun/compiled_mustache.wiki.git"
+else
+  git clone "https://github.com/thislooksfun/compiled_mustache.wiki.git"
+fi
 grind doc_benchmark_wiki
 cd compiled_mustache.wiki
 git add -A
