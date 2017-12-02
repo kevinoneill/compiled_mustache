@@ -5,3 +5,6 @@ if [[ $CI == true ]]; then
 else
   set -e
 fi
+
+grind test
+grind benchmark

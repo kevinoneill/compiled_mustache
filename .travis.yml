@@ -15,8 +15,7 @@ install:
   - scripts/install.sh
 
 script:
-  - grind test
-  - grind benchmark
+  - scripts/test.sh
 
 deploy:
   skip_cleanup: true
