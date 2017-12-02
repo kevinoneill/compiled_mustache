@@ -1,8 +1,8 @@
 name: "compiled_mustache"
 description: "Native support for pre-compiled mustache templates"
-author: "thislooksfun <thislooksfun@repbot.com>"
+author: "thislooksfun <thislooksfun@repbot.org>"
 homepage: "https://github.com/thislooksfun/compiled_mustache"
-version: "1.0.1"
+version: "1.0.2"
 dev_dependencies:
   test: "^0.12.27"
   benchmark_harness: ">=1.0.0 <2.0.0"
